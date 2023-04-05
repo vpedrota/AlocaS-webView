@@ -35,12 +35,21 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, watch, onMounted} from 'vue'
+  import { ref, watch, onMounted, onBeforeMount} from 'vue'
 
   const navbar = ref({ title: 'AlocaSensores', status: true})
   const screenWidth = ref(window.innerWidth);
   const items = ref(["Página Inicial", "Sobre"])
   let togglePanel = ref<boolean>(false)
+
+  onBeforeMount( () => {
+    if(screenWidth.value < 600){
+      navbar.value.status = false
+    }else{
+      navbar.value.status = true
+      togglePanel.value = false
+    }
+  });
 
   
   onMounted(() => {

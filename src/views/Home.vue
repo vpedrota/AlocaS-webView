@@ -1,5 +1,5 @@
 <template>
-
+  <div>Primeira View</div>
 </template>
 
 <script lang="ts" setup>
