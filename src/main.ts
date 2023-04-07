@@ -12,8 +12,11 @@ import { createApp } from 'vue'
 
 // Plugins
 import { registerPlugins } from '@/plugins'
+import OpenLayersMap from "vue3-openlayers";
+import "vue3-openlayers/dist/vue3-openlayers.css";
 
 const app = createApp(App)
+app.use(OpenLayersMap);
 
 registerPlugins(app)
 

@@ -7,15 +7,17 @@
       {{ navbar.title }}
     </v-app-bar-title>
     <div class="nav-buttons" v-if="navbar.status">
-      <v-btn prepend-icon="mdi-vuetify" variant="tonal" v-for="item in items">
-        {{ item }}
+      <v-btn prepend-icon="mdi-vuetify" variant="tonal" @click="$router.push(item.href)" v-for="item in items">
+        {{ item.nome }}
       </v-btn>
       
     </div>
 
-    <v-btn prepend-icon="mdi-vuetify" @click="changeToggleState" variant="tonal" v-if="!navbar.status">
-        {{screenWidth}}
-    </v-btn>
+    
+      <v-btn prepend-icon="mdi-vuetify" @click="changeToggleState" variant="tonal" v-if="!navbar.status">
+          {{screenWidth}}
+      </v-btn>
+    
     
   </v-app-bar>
 
@@ -25,8 +27,8 @@
         temporary
   >
   <div class="nav-buttons-list">
-    <v-btn prepend-icon="mdi-vuetify" variant="tonal" v-for="item in items">
-      {{ item }}
+    <v-btn prepend-icon="mdi-vuetify" @click="$router.push(item.href)" variant="tonal" v-for="item in items">
+      {{ item.nome }}
     </v-btn>
   </div>
   </v-navigation-drawer>
@@ -39,7 +41,7 @@
 
   const navbar = ref({ title: 'AlocaSensores', status: true})
   const screenWidth = ref(window.innerWidth);
-  const items = ref(["Página Inicial", "Sobre"])
+  const items = ref([{"nome":"Página Inicial", "href": "/"}, { "nome":"Sobre", "href":"about"}])
   let togglePanel = ref<boolean>(false)
 
   onBeforeMount( () => {
