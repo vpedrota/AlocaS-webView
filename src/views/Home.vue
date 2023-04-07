@@ -34,6 +34,16 @@
                         </v-btn>
                       </div>
                     </div>
+                    <div>
+                      <div class="text-overline mb-1">
+                        Remover
+                      </div>
+                      <div>
+                        <v-btn  @click="typeSelect = 'Polygon'" variant="tonal">
+                          Remover Todos
+                        </v-btn>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </v-card-item>
@@ -50,7 +60,36 @@
                 <div>
                   <div class="text-overline mb-1">
                     <h2>Geometrias inseridas</h2>
-                    <h3 v-for="geo in geometrias">{{geo}}</h3>
+                    <h3 v-if="geometrias.length == 0">Não há geometrias inseridas</h3>
+                    <v-container>
+
+                      <div v-for="geo in geometrias">
+                        <div>
+                            <v-row no-gutters>
+                              <v-col  class="infos" cols="1" md="1">{{ geo.id }}</v-col>
+                              <v-col  class="infos" cols="5"  md="5">
+                                <v-text-field 
+                                  class="input"
+                                  density="compact"
+                                  label="População"
+                                  required
+                                ></v-text-field>
+                              </v-col>
+                              <v-col  class="infos" cols="5" md="5">
+                                <v-text-field 
+                                  class="input"
+                                  density="compact"
+                                  label="Impacto"
+                                  required
+                                ></v-text-field>
+                              </v-col>
+                              <v-col  class="infos" cols="1" md="1">
+                                <v-btn variant="tonal">x</v-btn>
+                              </v-col>
+                            </v-row>
+                        </div>
+                      </div>
+                    </v-container>
                   </div>     
                 </div>
               </v-card-item>
@@ -73,12 +112,16 @@
   import { fromLonLat } from 'ol/proj';
   import { ref, onMounted, watch } from 'vue'
 
+interface geom {
+  id: number;
+}
+
 export default {
   
   setup() {
 
     let typeSelect = ref<string>("Polygon")
-    let geometrias = ref(["s"])
+    let geometrias = ref<geom[]>([])
 
     onMounted(() => {
 
@@ -129,7 +172,7 @@ export default {
 
         draw.on('drawend', (event: any) => {
           console.log('Geometria modificada: ', event.features);
-          geometrias.value.push("event.features")
+          geometrias.value.push({"id":geometrias.value.length+1})
         });
       })
 
@@ -137,7 +180,7 @@ export default {
     
       draw.on('drawend', (event: any) => {
         console.log('Geometria modificada: ', event.features);
-        geometrias.value.push("event.features")
+        geometrias.value.push({"id":geometrias.value.length+1})
       });
       
       modify.on('modifyend', (event: any) => {
@@ -171,5 +214,17 @@ export default {
 .opcoes{
   display: flex;
   column-gap: 5px;
+  margin-bottom: 5px;
+}
+
+.input{
+  max-width: 150px;
+}
+
+.infos{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
 }
 </style>
