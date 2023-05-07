@@ -19,17 +19,17 @@
                     <h2>Ferramentas</h2>
                   </div>
                   <div>
-                    <v-btn variant="tonal">s</v-btn>
+                    <v-btn variant="tonal">Satélite</v-btn>
                     <div>
                       <div class="text-overline mb-1">Selecionar Geometria</div>
                       <div class="opcoes">
-                        <v-btn  @click="typeSelect = 'Polygon'" variant="tonal">
+                        <v-btn :class="{ active_polygon: typeSelect == 'Polygon' }" @click="typeSelect = 'Polygon'" variant="tonal">
                           Polygon
                         </v-btn>
-                        <v-btn @click="typeSelect = 'Circle'" variant="tonal">
+                        <v-btn :class="{ active_circle: typeSelect == 'Circle' }" @click="typeSelect = 'Circle'" variant="tonal">
                           Circle
                         </v-btn>
-                        <v-btn @click="typeSelect = 'Point'" variant="tonal">
+                        <v-btn :class="{ active_point: typeSelect == 'Point' }" @click="typeSelect = 'Point'" variant="tonal">
                           Point
                         </v-btn>
                       </div>
@@ -84,7 +84,7 @@
                                 ></v-text-field>
                               </v-col>
                               <v-col  class="infos" cols="1" md="1">
-                                <v-btn variant="tonal">x</v-btn>
+                                <v-btn @click="remover(geo.id)" variant="tonal">x</v-btn>
                               </v-col>
                             </v-row>
                         </div>
@@ -122,8 +122,10 @@ export default {
 
     let typeSelect = ref<string>("Polygon")
     let geometrias = ref<geom[]>([])
+    let numberGeo = 1;
 
     onMounted(() => {
+
 
       let newMap:any, draw:any, snap:any
       const source = new VectorSource();
@@ -160,6 +162,7 @@ export default {
           source: source,
           type: type,
         });
+        console.log(draw)
         newMap.addInteraction(draw);
         snap = new Snap({source: source});
         newMap.addInteraction(snap);
@@ -169,10 +172,10 @@ export default {
         newMap.removeInteraction(draw);
         newMap.removeInteraction(snap);
         addInteractions(typeSelect.value);
-
+        //console.log(draw)
         draw.on('drawend', (event: any) => {
-          console.log('Geometria modificada: ', event.features);
-          geometrias.value.push({"id":geometrias.value.length+1})
+        
+          geometrias.value.push({"id":numberGeo++})
         });
       })
 
@@ -180,7 +183,7 @@ export default {
     
       draw.on('drawend', (event: any) => {
         console.log('Geometria modificada: ', event.features);
-        geometrias.value.push({"id":geometrias.value.length+1})
+        geometrias.value.push({"id":numberGeo++, "geomtry": draw})
       });
       
       modify.on('modifyend', (event: any) => {
@@ -188,7 +191,23 @@ export default {
       });
     })
 
-    return {typeSelect, geometrias}
+    // Função utlizada para remover a geomtria do layer e da lista de geometrias
+    function remover(value) {
+      let itemIndex = -1;
+
+      geometrias.value.forEach(function(elemento) {
+        if(elemento.id == value){
+          itemIndex++
+        }
+      });
+
+      console.log(itemIndex)
+      if(itemIndex != -1){
+        geometrias.value.splice(itemIndex, 1);
+      }
+    }
+
+    return {typeSelect, geometrias, remover}
   },
   
 }
@@ -225,6 +244,20 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
 
+.active_polygon{
+  background-color: #FF0000;
+  color: #FFFFFF; /* Define a cor do texto do botão como branco */
+}
+
+.active_circle{
+  background-color: #eab676;
+  color: #FFFFFF; /* Define a cor do texto do botão como branco */
+}
+
+.active_point{
+  background-color:  #93ea76;
+  color: #FFFFFF; /* Define a cor do texto do botão como branco */
 }
 </style>
